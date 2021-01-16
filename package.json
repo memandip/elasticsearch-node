@@ -1,0 +1,28 @@
+{
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "elasticsearch": "^16.7.2",
+    "express": "^4.17.1",
+    "faker": "^5.1.0",
+    "uuid": "^8.3.2"
+  },
+  "name": "elasticsearch-node",
+  "description": "NodeJS elastic search and kibana",
+  "version": "1.0.0",
+  "main": "app.js",
+  "devDependencies": {},
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/memandip/elasticsearch-node.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/memandip/elasticsearch-node/issues"
+  },
+  "homepage": "https://github.com/memandip/elasticsearch-node#readme"
+}
