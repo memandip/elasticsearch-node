@@ -9,3 +9,4 @@
  # todo
  - Create beautiful UI using React
  - Add some additional documentation
+ - Migrate to typescript
