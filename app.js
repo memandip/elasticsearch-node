@@ -1,36 +1,25 @@
 const express = require('express')
-const es = require('elasticsearch')
+const { Client } = require('@elastic/elasticsearch')
 const bodyParser = require('body-parser')
 const faker = require('faker')
 const uuid = require('uuid')
 const app = express()
-const port = process.env.PORT || 3000
-const esHost = process.env.ES_HOST || 'http://localhost:9200'
+const esController = require('./src/controllers/es')
+const { port, esHost } = require('./src/config')
 
 app.use(bodyParser.json())
 
 /**
  * We can start working with Elasticsearch by creating an Elasticsearch client.
  */
-const esClient = es.Client({ host: esHost })
+const esClient = new Client({ node: esHost, nodes: [] })
 
 /**
  * Next, we will create the POST /products endpoint. 
  * It accepts POST requests to index new products into an index called products in Elasticsearch.
  * For this, we can use the index method in the elasticsearch module.
  */
-app.post('/products', (req, res) => {
-    let { id, name, price, description } = req.body
-    esClient.index({
-        index: 'products',
-        body: { id, name, price, description }
-    }).then(response => {
-        return res.json({ message: 'Indexing successful.' })
-    }).catch(err => {
-        console.log('err', err)
-        return res.status(500).json({ message: 'Something went wrong.' })
-    })
-})
+app.post('/products', esController.createProductIndex)
 
 /**
  * Next, let’s create the GET /products endpoint. 
@@ -51,7 +40,7 @@ app.get('/products', (req, res) => {
     //     }
     // }
 
-    const searchText = req.query.text
+    const searchText = req.query.text || ''
     esClient.search({
         index: 'products',
         body: {
@@ -64,6 +53,7 @@ app.get('/products', (req, res) => {
     }).then(response => {
         return res.json(response)
     }).catch(err => {
+        console.log('err', err)
         return res.status(500).json({ message: 'Something went wrong.' })
     })
 })
@@ -86,7 +76,8 @@ app.get('/populate-fake-data', (req, res) => {
             description: c.productDescription(),
             color: c.color(),
             department: c.department(),
-            material: c.productMaterial()
+            material: c.productMaterial(),
+            imageUrl: faker.image.image()
         }
     }
 

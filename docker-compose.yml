@@ -11,6 +11,8 @@ services:
       xpack.license.self_generated.type: trial
     networks:
       - elk
+    volumes:
+      - /var/elasticsearch/data:/var/lib/elasticsearch/data  
 
   kibana:
     image: kibana:7.6.0
