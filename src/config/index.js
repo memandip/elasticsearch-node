@@ -5,5 +5,6 @@ dotenv.config({ path: path.join(__dirname, '..', '..', '.env') })
 
 module.exports = {
     port: process.env.PORT,
-    esHost: process.env.ES_HOST
+    esHost: process.env.ES_HOST,
+    baseUrl: process.env.BASE_URL
 }

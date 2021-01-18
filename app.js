@@ -3,9 +3,37 @@ const { Client } = require('@elastic/elasticsearch')
 const bodyParser = require('body-parser')
 const faker = require('faker')
 const uuid = require('uuid')
+const swaggerJsdoc = require('swagger-jsdoc')
+const swaggerUi = require('swagger-ui-express')
 const app = express()
 const esController = require('./src/controllers/es')
-const { port, esHost } = require('./src/config')
+const { port, esHost, baseUrl } = require('./src/config')
+const { map } = require('lodash')
+
+const options = {
+    definition: {
+        openapi: "3.0.0",
+        info: {
+            title: "Elastic Search Express API with Swagger",
+            version: "0.1.0",
+            description: "This is a Elastic search API application made with Express and documented with Swagger",
+        },
+        servers: [
+            {
+                url: baseUrl,
+                description: "Development Server"
+            },
+        ],
+    },
+    apis: ["./src/swaggerDefs/*.js"],
+};
+
+const specs = swaggerJsdoc(options);
+app.use(
+    "/api-docs",
+    swaggerUi.serve,
+    swaggerUi.setup(specs)
+);
 
 app.use(bodyParser.json())
 
@@ -21,13 +49,6 @@ const esClient = new Client({ node: esHost, nodes: [] })
  */
 app.post('/products', esController.createProductIndex)
 
-/**
- * Next, let’s create the GET /products endpoint. 
- * It handles GET requests with text queries for a product user is searching for. 
- * We use this text query to search the name fields of the products indexed in 
- * Elasticsearch so that the server can respond with a list of products similar to 
- * what the user is looking for.
- */
 app.get('/products', (req, res) => {
 
     /**
@@ -41,17 +62,23 @@ app.get('/products', (req, res) => {
     // }
 
     const searchText = req.query.text || ''
+    const limit = req.query.limit || 1000
     esClient.search({
         index: 'products',
         body: {
             query: {
                 match: {
-                    name: searchText.trim()
+                    product: searchText.trim()
                 }
             }
-        }
+        },
+        size: limit
     }).then(response => {
-        return res.json(response)
+        let data = map(response.body.hits.hits,'_source')
+        return res.json({
+            total: response.body.hits.total.value,
+            data
+        })
     }).catch(err => {
         console.log('err', err)
         return res.status(500).json({ message: 'Something went wrong.' })
