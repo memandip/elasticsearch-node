@@ -50,7 +50,6 @@ const esClient = new Client({ node: esHost, nodes: [] })
 app.post('/products', esController.createProductIndex)
 
 app.get('/products', (req, res) => {
-
     /**
      * to match against multiple fields
      */
@@ -77,6 +76,8 @@ app.get('/products', (req, res) => {
         let data = map(response.body.hits.hits,'_source')
         return res.json({
             total: response.body.hits.total.value,
+            limit,
+            took: `${response.body.took / 1000} seconds`,
             data
         })
     }).catch(err => {

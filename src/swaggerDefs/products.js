@@ -11,13 +11,13 @@
  *     summary: Retrieve a list of products
  *     description: It handles GET requests with text queries for a product user is searching for. 
  *     parameters:
- *      - in: path
+ *      - in: query
  *        name: text
  *        schema:
  *          type: string
  *        required: true
  *        description: Search Query 
- *      - in: path
+ *      - in: query
  *        name: limit
  *        schema:
  *          type: integer
@@ -26,4 +26,8 @@
  *     responses:
  *       200:
  *         description: A list of products.
+ *         content:
+ *          application/json:
+ *            schema:
+ *              type: object  
  */
