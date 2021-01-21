@@ -9,26 +9,28 @@ const app = express()
 const esController = require('./src/controllers/es')
 const { port, esHost, baseUrl } = require('./src/config')
 const { map } = require('lodash')
+const YAML = require('yamljs')
+const swaggerDoc = YAML.load('./src/swaggerDefs/config.yaml')
 
-const options = {
-    definition: {
-        openapi: "3.0.0",
-        info: {
-            title: "Elastic Search Express API with Swagger",
-            version: "0.1.0",
-            description: "This is a Elastic search API application made with Express and documented with Swagger",
-        },
-        servers: [
-            {
-                url: baseUrl,
-                description: "Development Server"
-            },
-        ],
-    },
-    apis: ["./src/swaggerDefs/*.js"],
-};
+// const options = {
+//     definition: {
+//         openapi: "3.0.0",
+//         info: {
+//             title: "Elastic Search Express API with Swagger",
+//             version: "0.1.0",
+//             description: "This is a Elastic search API application made with Express and documented with Swagger",
+//         },
+//         servers: [
+//             {
+//                 url: baseUrl,
+//                 description: "Development Server"
+//             },
+//         ],
+//     },
+//     apis: ["./src/swaggerDefs/*.yaml"],
+// };
 
-const specs = swaggerJsdoc(options);
+const specs = swaggerJsdoc(swaggerDoc);
 app.use(
     "/api-docs",
     swaggerUi.serve,
@@ -59,7 +61,7 @@ app.get('/products', (req, res) => {
     //         fields: ['name', 'description']
     //     }
     // }
-
+    const t1 = Date.now()
     const searchText = req.query.text || ''
     const limit = req.query.limit || 1000
     esClient.search({
@@ -73,11 +75,13 @@ app.get('/products', (req, res) => {
         },
         size: limit
     }).then(response => {
-        let data = map(response.body.hits.hits,'_source')
+        let data = map(response.body.hits.hits, '_source')
+        const t2 = Date.now()
         return res.json({
             total: response.body.hits.total.value,
             limit,
             took: `${response.body.took / 1000} seconds`,
+            expressTook: `${(t2 - t1) / 1000} seconds`,
             data
         })
     }).catch(err => {

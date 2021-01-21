@@ -10,7 +10,8 @@
     "lodash": "^4.17.20",
     "swagger-jsdoc": "^6.0.1",
     "swagger-ui-express": "^4.1.6",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "yamljs": "^0.3.0"
   },
   "name": "elasticsearch-node",
   "description": "NodeJS elastic search and kibana",

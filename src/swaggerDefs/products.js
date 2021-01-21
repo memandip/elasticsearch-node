@@ -31,3 +31,29 @@
  *            schema:
  *              type: object  
  */
+
+// ----------------------------------------------------------------------------------------------------------------------- //
+
+ /**
+ * Populate fake data for elastic search 
+ * 
+ * @swagger
+ * /populate-fake-data:
+ *   get:
+ *     summary: Populates fake data
+ *     description: It populates fake product data in product index. 
+ *     parameters:
+ *      - in: query
+ *        name: limit
+ *        schema:
+ *          type: integer
+ *        required: false
+ *        description: Total fake data to populate
+ *     responses:
+ *       200:
+ *         description: Populate fake data.
+ *         content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ */
