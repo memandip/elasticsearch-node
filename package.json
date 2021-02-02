@@ -19,7 +19,9 @@
   "main": "app.js",
   "devDependencies": {},
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "start:es":"docker-compose up -d",
+    "start:es-cluster":"docker-compose -f es-cluster up -d"
   },
   "repository": {
     "type": "git",
